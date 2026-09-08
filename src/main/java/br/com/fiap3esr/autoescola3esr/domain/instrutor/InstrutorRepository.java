@@ -15,7 +15,7 @@ public interface InstrutorRepository extends JpaRepository<Instrutor, Long> {
         where
         i.ativo = true
         and
-        i.especialidade = :especialidade
+        (:especialidade is null or i.especialidade = :especialidade)
         and
         i.id not in(
             select a.instrutor.id from Instrucao a

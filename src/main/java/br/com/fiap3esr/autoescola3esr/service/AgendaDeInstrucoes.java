@@ -73,9 +73,9 @@ public class AgendaDeInstrucoes {
         if (dados.idInstrutor() != null) {
             return instrutorRepository.getReferenceById(dados.idInstrutor());
         }
-        if (dados.especialidade() == null) {
-            throw new ValidacaoException("Especialidade é campo obrigatório, caso o instrutor não seja informado!");
-        }
+        // Instrutor não informado: o sistema sorteia aleatoriamente um instrutor
+        // disponível na data/hora. A especialidade é opcional — quando informada,
+        // restringe o sorteio a instrutores daquela especialidade.
         return instrutorRepository.escolherInstrutorAleatorioDisponivel(dados.especialidade(), dados.dataHora());
     }
 }

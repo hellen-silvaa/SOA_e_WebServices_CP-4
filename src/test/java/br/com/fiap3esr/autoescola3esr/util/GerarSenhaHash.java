@@ -1,10 +1,13 @@
-package br.com.fiap3esr.autoescola3esr.temp;
+package br.com.fiap3esr.autoescola3esr.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * Utilitário de linha de comando para gerar o hash BCrypt de uma senha,
  * útil para criar seeds de usuários em migrations do Flyway.
+ *
+ * Fica em {@code src/test} de propósito: é ferramenta de desenvolvimento e
+ * não deve ser empacotada no artefato de produção.
  *
  * Uso:  java ... GerarSenhaHash "minhaSenha"   (sem argumento, usa "123456")
  */

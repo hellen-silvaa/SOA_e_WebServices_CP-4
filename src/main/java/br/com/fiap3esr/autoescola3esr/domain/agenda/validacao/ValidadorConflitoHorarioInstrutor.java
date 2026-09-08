@@ -13,6 +13,11 @@ public class ValidadorConflitoHorarioInstrutor implements ValidadorAgendamento {
 
     @Override
     public void validar(DadosAgendamento dados) {
+        if (dados.idInstrutor() == null) {
+            // Instrutor não informado: será sorteado pelo serviço, e a query de
+            // sorteio já exclui instrutores ocupados na data/hora.
+            return;
+        }
         boolean instrutorOcupado = repository.existsByInstrutorIdAndDataHoraAndMotivoCancelamentoIsNull(
                 dados.idInstrutor(),
                 dados.dataHora()

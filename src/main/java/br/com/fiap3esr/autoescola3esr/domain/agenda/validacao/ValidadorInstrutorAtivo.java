@@ -13,6 +13,11 @@ public class ValidadorInstrutorAtivo implements ValidadorAgendamento {
 
     @Override
     public void validar(DadosAgendamento dados) {
+        if (dados.idInstrutor() == null) {
+            // Instrutor não informado: será sorteado pelo serviço, e a query de
+            // sorteio já considera apenas instrutores ativos.
+            return;
+        }
         if (instrutorRepository.existsByIdAndAtivoFalse(dados.idInstrutor())) {
             throw new ValidacaoException("Instrução não pode ser agendada com instrutor inativo!");
         }

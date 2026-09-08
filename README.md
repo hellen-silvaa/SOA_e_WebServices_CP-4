@@ -120,7 +120,7 @@ Content-Type: application/json
 |--------|------|--------|-----------|
 | POST | `/instrutores` | **ADMIN** | Cadastra instrutor (telefone é opcional — informado depois via PUT) |
 | GET | `/instrutores` | ADMIN/USER | Lista ativos: nome, e-mail, CNH, especialidade (paginado, 10/pág, ordem por nome) |
-| GET | `/instrutores/{id}` | **ADMIN** | Detalha instrutor |
+| GET | `/instrutores/{id}` | **ADMIN** | Detalha instrutor (o `telefone` só aparece depois de informado via PUT) |
 | PUT | `/instrutores` | **ADMIN** | Atualiza **nome, telefone e endereço** (e-mail, CNH e especialidade são imutáveis) |
 | DELETE | `/instrutores/{id}` | **ADMIN** | Exclusão lógica (marca como inativo) |
 
@@ -154,8 +154,13 @@ Content-Type: application/json
 | DELETE | `/instrucoes` | autenticado | Cancela uma instrução |
 
 ```jsonc
-// POST /instrucoes  (instrutor é opcional; sem ele, informar a especialidade)
+// POST /instrucoes
+// instrutor é opcional; se omitido, o sistema sorteia um instrutor disponível.
+// especialidade também é opcional — quando informada, restringe o sorteio.
 { "id_aluno": 1, "id_instrutor": 2, "data_hora": "20/09/2026 - 09:00" }
+
+// POST /instrucoes  (sem instrutor: sorteio; especialidade opcional)
+{ "id_aluno": 1, "especialidade": "CARROS", "data_hora": "20/09/2026 - 09:00" }
 
 // DELETE /instrucoes
 { "id_instrucao": 5, "motivo": "ALUNO_DESISTIU" }
@@ -170,8 +175,9 @@ Content-Type: application/json
 - Aluno e instrutor precisam estar ativos;
 - Máximo de **2 instruções por dia** para o mesmo aluno;
 - Um instrutor não pode ter duas instruções na mesma data/hora;
-- Instrutor opcional — se omitido, o sistema sorteia um instrutor disponível
-  da especialidade informada.
+- Instrutor opcional — se omitido, o sistema sorteia aleatoriamente um instrutor
+  disponível na data/hora; se a especialidade for informada, o sorteio fica
+  restrito a instrutores dela.
 
 ### Cancelamento de instrução
 - É obrigatório informar o motivo: `ALUNO_DESISTIU`, `INSTRUTOR_CANCELOU` ou `OUTROS`;
@@ -186,5 +192,7 @@ Content-Type: application/json
 
 ## Utilitário
 
-`br.com.fiap3esr.autoescola3esr.temp.GerarSenhaHash` gera um hash BCrypt no console
-(útil para criar seeds de usuários em migrations).
+`br.com.fiap3esr.autoescola3esr.util.GerarSenhaHash` (em `src/test`, fora do
+artefato de produção) gera um hash BCrypt no console — útil para criar seeds de
+usuários em migrations. Rode a classe pela IDE (tem `main`), passando a senha
+como argumento (sem argumento, usa `123456`).

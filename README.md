@@ -18,6 +18,28 @@ Disciplina: **SOA e WebServices** — FIAP.
 - Java 25 / Spring Boot 4
 - Spring Web, Spring Data JPA, Spring Security (JWT via `com.auth0:java-jwt`)
 - Bean Validation, Flyway, MySQL, Lombok
+- `spring-dotenv` (segredos fora do código)
+- Testes: JUnit 5 + Mockito
+
+## Configuração (variáveis de ambiente)
+
+Nenhum segredo fica no código. A aplicação lê estas variáveis do ambiente ou de
+um arquivo `.env` na raiz (carregado automaticamente por `spring-dotenv`):
+
+| Variável | Descrição | Default (dev) |
+|----------|-----------|---------------|
+| `DB_URL` | URL JDBC do MySQL | `jdbc:mysql://localhost:3306/autoescola3esr` |
+| `DB_USERNAME` | usuário do banco | `root` |
+| `DB_PASSWORD` | senha do banco | `fiap` |
+| `JWT_SECRET` | segredo HMAC-256 do token JWT (use ≥ 32 chars aleatórios) | valor de dev |
+| `SERVER_PORT` | porta HTTP | `8081` |
+
+```bash
+cp .env.example .env      # e ajuste os valores
+```
+
+O `.env` está no `.gitignore` — **não** é versionado. Em produção, defina as
+variáveis direto no ambiente.
 
 ## Como executar
 
@@ -25,14 +47,24 @@ Disciplina: **SOA e WebServices** — FIAP.
    ```sql
    create database autoescola3esr;
    ```
-2. Ajuste, se necessário, `src/main/resources/application.properties`
-   (`spring.datasource.username` / `password`).
+2. Copie `.env.example` para `.env` e ajuste (ou exporte as variáveis).
 3. Rode a aplicação:
    ```bash
    ./mvnw spring-boot:run
    ```
    A API sobe em `http://localhost:8081`. O Flyway cria/atualiza o schema
-   automaticamente (migrations `V1` … `V10`).
+   automaticamente (migrations `V1` … `V11`).
+
+## Testes
+
+```bash
+./mvnw test
+```
+
+Cobrem as regras de negócio do agendamento e do cancelamento (validadores
+isolados, com JUnit 5 + Mockito): horário de funcionamento, hora inteira,
+antecedência de 30 min, limite de 2 instruções/dia, conflito de horário do
+instrutor, aluno inativo e antecedência de 24h para cancelamento.
 
 ### Usuário administrador inicial
 
